@@ -5,9 +5,10 @@ jbui allows you to create layouts in HTML and turn them into reusable DOM nodes.
 It couldn't be easier.
 <ol>
   <li>Create a component or layout you would like to re-use</li>
-  <li>Put it inside a wrapper div with the class <code>jbui</code> and the dataset <code>jbui.name</code></li>
+  <li>Put it inside a wrapper div with the class <code>jbui</code> and the dataset <code>data-jbui-name</code></li>
+  <li>Create elements inside the <code>jbui</code> element with the class <code>jbuiElement</code> and the dataset <code>data-jbui-name</code></li>
   <li>Call <code>jbui.init();</code></li>
-  <li>Use <code>jbui.create([the jbui.name you gave it], {"id":"myFirstBui", "value":"Hello, World", [other valid HTML/CSS properties]});</code> to create a node.</li>
+  <li>Use <code>jbui.create([the jbui-name you gave wrapper], {[jbui-name you gave element]:{"id":"myFirstBui", "value":"Hello, World", [other valid HTML/CSS properties]}});</code> to create a node.</li>
   <li>Add the node to your web page using [etc].appendChild, etc.</li>
 </ol>
 
