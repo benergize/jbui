@@ -1,0 +1,57 @@
+<!-- Using the jsdelivr CDN to get the library. -->
+<script src = 'https://cdn.jsdelivr.net/gh/benergize/jbui/jbui.js'></script>
+
+
+<!-- Here's your component -->
+<div class = 'jbui' data-jbui-name = "dayTimeControl">
+
+    <!-- And an element -->
+    <select class = 'jbuiElement' data-jbui-name = "day">
+        <option>Sunday</option>
+        <option>Monday</option>
+        <option>Tuesday</option>
+        <option>Wednesday</option>
+        <option>Thursday</option>
+        <option>Friday</option>
+        <option>Saturday</option>
+    </select>
+
+    <!-- And another element -->
+    <input type = 'time' class = 'jbuiElement' data-jbui-name = 'time'>
+</div>
+
+<!-- Here's a different component -->
+<div class = 'jbui' data-jbui-name = "anotherComponent">
+    <div class = 'jbuiElement' data-jbui-name = "justADiv"></div>
+</div>
+
+
+<script>
+
+    //Initialize jbui. Note that this removes the initial element(s).
+    jbui.init();
+
+    //Create a new dayTimeControl with no properties changed
+    document.body.appendChild(jbui.create("dayTimeControl"));
+
+    //Create a new dayTimeControl with Tuesday as the selected day
+    document.body.appendChild(jbui.create("dayTimeControl", {"day": {value:"Tuesday"}}));
+
+    //Create a new dayTimeControl with the time and day set
+    document.body.appendChild(jbui.create("dayTimeControl", {"day": {value:"Friday"}, "time": {value:"08:56"}}));
+
+    //You can set (just about) any valid DOM property
+    document.body.appendChild(jbui.create("anotherComponent", {
+        "justADiv": {
+            "innerHTML":"Hello, world!", 
+            "style": {
+                "font-family":"Arial",
+                "background":"black",
+                "color":"white"
+            },
+            "onclick": function(){ alert('Hello, world!') },
+            "dataset": {"thing1": "1", "thing2": "2"}
+        }
+    }));
+
+</script>
