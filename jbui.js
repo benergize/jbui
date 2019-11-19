@@ -3,7 +3,8 @@ jbui = {
         init: function() {
 
             Array.from(document.getElementsByClassName('jbui')).forEach(function(el) {
-                jbui.registry[el.dataset.jbuiName] = el.outerHTML;
+                jbui.registry[el.dataset.jbuiName].src = el.outerHTML;
+                jbui.registry[el.dataset.jbuiName].tag = el.tagName;
                 el.remove();
             });
         },
@@ -11,8 +12,8 @@ jbui = {
         create: function(componentToCreate, inputs) {
 
             let comp = jbui.registry[componentToCreate];
-            let newDiv = document.createElement("div");
-            newDiv.innerHTML = comp;
+            let newDiv = document.createElement(comp.tag);
+            newDiv.innerHTML = comp.src;
 
             Array.from(newDiv.getElementsByClassName('jbuiElement')).forEach(function(thisElement) {
 
