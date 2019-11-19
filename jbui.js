@@ -9,12 +9,10 @@ jbui = {
     },
 
     create: function(componentToCreate, inputs) {
+ 
+        let newElement = jbui.registry[componentToCreate].cloneNode(true);
 
-        let comp = jbui.registry[componentToCreate];
-        let newDiv = jbui.registry[componentToCreate];//document.createElement(comp.tag);
-        //newDiv.innerHTML = comp.src;
-
-        Array.from(newDiv.getElementsByClassName('jbuiElement')).forEach(function(thisElement) {
+        Array.from(newElement.getElementsByClassName('jbuiElement')).forEach(function(thisElement) {
 
             for(v in inputs) { 
 
@@ -33,7 +31,7 @@ jbui = {
             }
         });
 
-        return newDiv;
+        return newElement;
 
     }
 }
