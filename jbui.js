@@ -3,6 +3,7 @@ jbui = {
         init: function() {
 
             Array.from(document.getElementsByClassName('jbui')).forEach(function(el) {
+                jbui.registry[el.dataset.jbuiName] = {};
                 jbui.registry[el.dataset.jbuiName].src = el.outerHTML;
                 jbui.registry[el.dataset.jbuiName].tag = el.tagName;
                 el.remove();
