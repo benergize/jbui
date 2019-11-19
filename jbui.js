@@ -1,41 +1,39 @@
 jbui = {
-        registry: {},
-        init: function() {
+    registry: {},
+    init: function() {
 
-            Array.from(document.getElementsByClassName('jbui')).forEach(function(el) {
-                jbui.registry[el.dataset.jbuiName] = {};
-                jbui.registry[el.dataset.jbuiName].src = el.outerHTML;
-                jbui.registry[el.dataset.jbuiName].tag = el.tagName;
-                el.remove();
-            });
-        },
+        Array.from(document.getElementsByClassName('jbui')).forEach(function(el) {
+            jbui.registry[el.dataset.jbuiName] = el;
+            el.remove();
+        });
+    },
 
-        create: function(componentToCreate, inputs) {
+    create: function(componentToCreate, inputs) {
 
-            let comp = jbui.registry[componentToCreate];
-            let newDiv = document.createElement(comp.tag);
-            newDiv.innerHTML = comp.src;
+        let comp = jbui.registry[componentToCreate];
+        let newDiv = jbui.registry[componentToCreate];//document.createElement(comp.tag);
+        //newDiv.innerHTML = comp.src;
 
-            Array.from(newDiv.getElementsByClassName('jbuiElement')).forEach(function(thisElement) {
+        Array.from(newDiv.getElementsByClassName('jbuiElement')).forEach(function(thisElement) {
 
-                for(v in inputs) { 
+            for(v in inputs) { 
 
-                    if(thisElement.dataset.jbuiName === v) {
+                if(thisElement.dataset.jbuiName === v) {
 
-                        let thisInput = inputs[v];
+                    let thisInput = inputs[v];
 
-                        for(property in thisInput) {
+                    for(property in thisInput) {
 
-                            if(property === "data" || property === "dataset") { for(dataProperty in thisInput[property]) { thisElement.dataset[dataProperty] = thisInput[property][dataProperty]; } }
-                            else if(property === "style") { for(styleProperty in thisInput[property]) { thisElement.style[styleProperty] = thisInput[property][styleProperty]; } }
-                            else { thisElement[property] = thisInput[property]; }
-                        }
-
+                        if(property === "data" || property === "dataset") { for(dataProperty in thisInput[property]) { thisElement.dataset[dataProperty] = thisInput[property][dataProperty]; } }
+                        else if(property === "style") { for(styleProperty in thisInput[property]) { thisElement.style[styleProperty] = thisInput[property][styleProperty]; } }
+                        else { thisElement[property] = thisInput[property]; }
                     }
+
                 }
-            });
+            }
+        });
 
-            return newDiv;
+        return newDiv;
 
-        }
     }
+}
