@@ -10,9 +10,10 @@ jbui = {
 
     create: function(componentToCreate, inputs) {
  
-        let newElement = jbui.registry[componentToCreate].cloneNode(true);
+		let newElement = jbui.registry[componentToCreate].cloneNode(true);
+		let sarray = Array.from(newElement.getElementsByClassName('jbuiElement')).concat(newElement);
 
-        Array.from(newElement.getElementsByClassName('jbuiElement')).forEach(function(thisElement) {
+        sarray.forEach(function(thisElement) {
 
             for(v in inputs) { 
 
