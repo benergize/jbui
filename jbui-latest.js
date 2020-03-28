@@ -1,8 +1,10 @@
-function jbui() {
 
+function jbui() {
+	
 	this.registry = {}
 	this.data = {}
-	this.set = function(varv,val=-1) {
+
+	this.set = function(varv,val=-1, caller='not input') {
 
 		if(typeof varv === "object") {
 
@@ -13,7 +15,7 @@ function jbui() {
 			this.data[varv] = val;
 
 		}
-		this.update();
+		this.update(caller);
 	}
 	this.get = function(varv) {
 		
@@ -25,12 +27,21 @@ function jbui() {
 			return undefined;
 		}
 	}
+	
+	
 	this.init = function() {
 
-		Array.from(document.getElementsByClassName('jbui')).forEach(function(el) {
+
+		
+		let arr = this.select(".jbui");
+		//for(let v = 0; v < arr.length; v++) {
+		
+		
+		this.select(".jbui").forEach(function(el) {
+			
 			
 			if(typeof el.dataset.template == "undefined") {
-				this.registry[el.dataset.jbuiName] = el;
+				this.registry[el.dataset.jname] = {"element":el};
 				el.remove();
 			}
 			else {
@@ -39,34 +50,40 @@ function jbui() {
 				
 			}
 
-		});
+		},this);
 
 		this.select('.jbind').forEach(el=>{
-			console.log(el);
-			el.addEventListener("keydown",ev=>{ this.data[el.dataset.bind] = el.value; this.update(); });
-			el.addEventListener("keyup",ev=>{ this.data[el.dataset.bind] = el.value; this.update(); });
-			el.addEventListener("change",ev=>{ this.data[el.dataset.bind] = el.value; this.update(); });
+			
+			let name = typeof el.dataset.jname != "undefined" ? el.dataset.jname : el.dataset.bind;
+			el.addEventListener("keypress",ev=>{ this.set(name,el.value,'input'); });
+			el.addEventListener("keyup",ev=>{ this.set(name,el.value, 'input'); });
+			el.addEventListener("change",ev=>{ this.set(name,el.value,'input'); });
 		});
 
 		this.update();
 
 	}
-	this.update = function(){
+	this.update = function(caller){
 
 		this.select('.jmodel').forEach(el=>{
 			
-			if(typeof this.data[el.dataset.innerhtml] != "undefined") { el.innerHTML = this.data[el.dataset.innerhtml]; }
-			if(typeof this.data[el.dataset.value] != "undefined") { el.value = this.data[el.dataset.value]; }
-
+			
 			if(typeof el.dataset.attr != "undefined") {
 
-				el[el.dataset.attr] = typeof el.dataset.name != "undefined" ? el.dataset.name : this.data[el.dataset.model];
+				el[el.dataset.attr] = typeof el.dataset.jname != "undefined" ? this.data[el.dataset.jname] : this.data[this.data[el.dataset.model]];
 			}
-		});
-		this.select('.jbind').forEach(el=>{
-			let bind = typeof this.dataset.bind != "undefined" ? this.dataset.bind : this.dataset.name;
-			el.value = this.data[bind];
-		});
+			else if(typeof this.data[el.dataset.value] != "undefined") { el.value = this.data[el.dataset.value]; }
+			else { el.innerHTML = this.data[el.dataset.jname]; }
+
+		},this);
+		
+		if(caller != 'input') {
+			this.select('.jbind').forEach(el=>{
+				
+				let bind = typeof el.dataset.bind != "undefined" ? el.dataset.bind : el.dataset.jname;
+				el.value = this.data[bind];
+			}, this);
+		}
 	}
 
 	this.register = function(templateName, templateData) {
@@ -99,7 +116,7 @@ function jbui() {
 
 		if(superSnake != "") {
 		
-			let newElement=customElements.define(superSnake,
+			let newElement = customElements.define(superSnake,
 				class extends HTMLElement {
 					constructor() {
 						super();
@@ -115,16 +132,16 @@ function jbui() {
 
 	this.create = function(componentToCreate, inputs) {
 
-		if(Object.keys(this.registry).indexOf(componentToCreate) === -1) { console.warn("Unregistered component or view '" + componentToCreate + "'."); return false; }
+		if(Object.keys(this.registry).indexOf(componentToCreate) === -1) { console.error("Unregistered component or view '" + componentToCreate + "'."); return false; }
 
 		let newElement = this.registry[componentToCreate].element.cloneNode(true);
-		let sarray = Array.from(newElement.getElementsByClassName('jbuiElement')).concat(newElement);
+		let sarray = Array.from(newElement.getElementsByClassName('jelement')).concat(newElement);
 
 		sarray.forEach(function(thisElement) {
 
 			for(v in inputs) { 
 
-				if(thisElement.dataset.jbuiName === v) {
+				if(thisElement.dataset.jname === v) {
 
 					let thisInput = inputs[v];
 
@@ -140,8 +157,17 @@ function jbui() {
 		});
 
 		
-		if(typeof this.registry[componentToCreate].script == 'function') { console.log('hi'); this.registry[componentToCreate].script(); }
-
+		if(typeof this.registry[componentToCreate].script == 'function') { this.registry[componentToCreate].script(); }
+		
+		Array.from(newElement.querySelectorAll(".jbind")).forEach(function(el) {
+			
+			let name = typeof el.dataset.jname != "undefined" ? el.dataset.jname : el.dataset.bind;
+			el.addEventListener("keypress",ev=>{ this.set(name,el.value,'input'); });
+			el.addEventListener("keyup",ev=>{ this.set(name,el.value, 'input'); });
+			el.addEventListener("change",ev=>{ this.set(name,el.value,'input'); });
+		},this);
+		
+		
 		return newElement;
 
 	}
@@ -154,8 +180,13 @@ function jbui() {
 	}
 
 	this.import = function(imp) {
-		let s = document.createElement("script"); s.src = imp; document.head.appendChild(s);
+		
+		let s = -1;
+		if(imp.indexOf('.js') !== -1) { s = document.createElement("script"); s.src = imp; }
+		if(imp.indexOf('.css') !== -1) { s = document.createElement("link"); s.rel = "stylesheet"; s.href = imp; }
+		
+		document.head.appendChild(s);
 	}
-
+	
 	return this;
 }
