@@ -1,4 +1,3 @@
-
 function jbui() {
 	
 	this.registry = {}
@@ -89,10 +88,11 @@ function jbui() {
 	this.register = function(templateName, templateData) {
 
 		if(typeof this.registry[templateName] != "undefined") { console.warn("Template '" + templateName + "' was already defined."); }
-
-		let holderDiv = document.createElement("div");
+ 
+		let holderDiv = document.createElement("template");
 		holderDiv.innerHTML = typeof templateData == "object" ? templateData.html : templateData;
-		this.registry[templateName] = holderDiv.children[0];
+		 
+		this.registry[templateName] = {"element":holderDiv.content.children[0],"script":templateData.script};
 
 		let superSnake = "";
 		if(templateName.indexOf("-") === -1) {
