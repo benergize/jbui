@@ -1,5 +1,5 @@
 <h1>jbui</h1>
-jbui allows you to create layouts in HTML and turn them into reusable DOM nodes.
+<del>jbui allows you to create layouts in HTML and turn them into reusable DOM nodes.</del> jbui has become <a href = 'https://github.com/benergize/GoingUI'>GoingUI</a>. Take a look!
 
 <h2>Features</h2>
 <ul>
